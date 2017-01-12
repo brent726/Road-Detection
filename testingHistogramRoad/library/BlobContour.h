@@ -3,11 +3,15 @@
 
 
 #include "list"
-#include "opencv/cv.h"
-#include "opencv/cxcore.h"
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
+//#include "opencv/cv.h"
+//#include "opencv/cxcore.h"
+//#include <opencv2/opencv.hpp>
+//#include <opencv2/core/core.hpp>
 #include <list>
+#include "highgui.h"
+#include "cv.h"
+#include "conio.h"
+#include <vector>   
 
 
 class CBlob; //Forward declaration in order to enable the "parent" field

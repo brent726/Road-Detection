@@ -22,15 +22,20 @@ MODIFICATIONS (Modification, Author, Date):
 #include "BlobLibraryConfiguration.h"
 #include "ComponentLabeling.h"
 #include <math.h>
-#include "opencv/cxcore.h"
-#include <opencv2/opencv.hpp>
+//#include "opencv/cxcore.h"
+//#include <opencv2/opencv.hpp>
 #include <deque>
 #include <limits.h>
 #include <stdio.h>
 #include <functional>
 #include <algorithm>
-#include <opencv2/opencv.hpp>
+//#include <opencv2/opencv.hpp>
 #include <cfloat>
+
+#include "highgui.h"
+#include "cv.h"
+#include "conio.h"
+#include <vector>   
 
 #ifdef MATRIXCV_ACTIU
 	#include "matrixCV.h"

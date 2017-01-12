@@ -6,6 +6,7 @@
 #include <vector>   
 
 using namespace cv;
+
 using namespace std;
 
 // Global variables
@@ -13,48 +14,34 @@ Mat inputImage[5], outputImage, channel[3], labImage, roadImage,labRoadImage;
 std::string colorSpace;
 bool showSingleChannel;
 
-
-void showimgcontours(Mat &threshedimg,Mat &original)
+void removeSmallBlobs(Mat& im, Mat& roadImage , double size)
 {
-	vector<vector<Point> > contours;
-	vector<Vec4i> hierarchy;
-	int largest_area = 0;
-	int largest_contour_index = 0;
-	imshow("before contour threshedimg",threshedimg);
-	
-	findContours(threshedimg, contours, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE);
-	//this will find largest contour
-	imshow("threshedimg",threshedimg);
-	for (int i = 0; i< contours.size(); i++) // iterate through each contour. 
-	{
-		printf("cotours size: %d",contours.size());
-		double a = contourArea(contours[i], false);  //  Find the area of contour
-		if (a>largest_area)
-		{
-			largest_area = a;
-			largest_contour_index = i;                //Store the index of largest contour
+   int largest_contour_index=0;
+   int largest_area=0;
+    Rect bounding_rect;
+    vector<vector<Point>> contours; // Vector for storing contour
+    vector<Vec4i> hierarchy;
+    findContours( im, contours, hierarchy,CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE );
+    // iterate through each contour.
+    for( int i = 0; i< contours.size(); i++ )
+    {
+        //  Find the area of contour
+        double a=contourArea( contours[i],false); 
+		printf("area:%lf\n",a);
+        if(a>largest_area){
+            largest_area=a;cout<<i<<" area  "<<a<<endl;
+            // Store the index of largest contour
+            largest_contour_index=i;               
+            // Find the bounding rectangle for biggest contour
+            bounding_rect=boundingRect(contours[i]);
 		}
-		printf("area=%d\n",a);
-
 	}
-	//search for largest contour has end
-
-	if (contours.size() > 0)
-	{
-		//drawContours(original, contours,largest_contour_index, CV_RGB(0, 255, 0), 2, 8, hierarchy);
-		//if want to show all contours use below one
-		
-		drawContours(original,contours,-1, CV_RGB(0, 255, 0), 2, 8, hierarchy);
-	}
+    //Scalar color( 255,255,255);  // color of the contour in the
+    Scalar color( 255,255,255);
+	//Draw the contour and rectangle
+    drawContours( roadImage, contours,largest_contour_index, color, CV_FILLED,8,hierarchy);
+	imshow("contoured Image",roadImage);
 }
-
-
-
-//void RemoveSmallRegion(Mat& Src, Mat& Dst, int AreaLimit, int CheckMode, int NeihborMode)   where, Src as the source image, Dst object image, AreaLimit for the area of the communication field, CheckMode the mode selection, where 0 is the removal of small areas, 1 hole filling. NeihborMode is a neighborhood type, which can be either 4-neighborhood or 8-neighborhood. The following is the implementation of the code.
-//to remove small blobs (noise)
-//CheckMode: 0????????1???????; NeihborMode?0??4???1??8??;  
-
-
 
 
 int main(int argc, char** argv){
@@ -132,10 +119,10 @@ int main(int argc, char** argv){
 		{
 			//printf("Road Image x= %d ",x);
 			//printf("Road Image y= %d\n",y);
-			if((labRoadImage.at<Vec3b>(y,x)[1]>126)&&(labRoadImage.at<Vec3b>(y,x)[1]<131))  // these threshold values must be tuned or determined automatically!
+			if((labRoadImage.at<Vec3b>(y,x)[1]>127)&&(labRoadImage.at<Vec3b>(y,x)[1]<132))  // these threshold values must be tuned or determined automatically!
 			{
 				
-				if((labRoadImage.at<Vec3b>(y,x)[2]>127)&&(labRoadImage.at<Vec3b>(y,x)[2]<135)) //these threshold values must be tuned or determined automatically!
+				if((labRoadImage.at<Vec3b>(y,x)[2]>127)&&(labRoadImage.at<Vec3b>(y,x)[2]<132)) //these threshold values must be tuned or determined automatically!
 				{
 					//changing the pixel intensity to white
 					binaryImage.at<uchar>(y, x) = 255;
@@ -144,17 +131,28 @@ int main(int argc, char** argv){
 		}
 	}
 	imshow("Binary Image", binaryImage);
-	Mat sample=imread("contours.png");
-	Mat graySample;
-	cvtColor(sample, graySample, COLOR_BGR2GRAY);	
-	threshold(graySample, graySample, 50, 255, THRESH_BINARY);
-	imshow("Binary Image", graySample);
-	showimgcontours(graySample,sample);
 	
-	
-	//removeSmallBlobs(sampleBinary, 200);
-	imshow("Small Blobs Remove Binary Image", sample);
 
+	 // Create a structuring element (SE)
+    int morph_size = 3;
+	Mat element = getStructuringElement( MORPH_RECT, Size( 2*morph_size + 1, 2*morph_size+1 ), Point( morph_size, morph_size ) );
+	Mat morphImg;
+	for (int i=0;i<2;i++)
+    {   
+		morphologyEx( binaryImage, morphImg, 2, element, Point(-1,-1), i );   
+		
+
+		//imshow("result", morphImg);
+		waitKey(1000);
+    }   
+	imshow("Morph Binary Image", morphImg);
+
+	removeSmallBlobs(morphImg, roadImage , 400);
+	Mat cImage=imread("contours.png");
+	//imshow("contours",cImage);
+	cvtColor(cImage, cImage, COLOR_BGR2GRAY);		
+	Mat dst;
+	//removeSmallBlobs(cImage,  cImage , 400);
 	//if(colorSpace == "lab") 	showLAB();
 	// prevent from closing
 	waitKey(0);

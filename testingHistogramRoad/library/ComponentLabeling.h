@@ -7,7 +7,11 @@
 #include "BlobContour.h"
 #include "blob.h"
 #include "opencv2/opencv.hpp"
-#include <pthread.h>
+//#include <pthread.h>
+#include "highgui.h"
+#include "cv.h"
+#include "conio.h"
+#include <vector>   
 
 class myCompLabelerGroup; //forward decl. for "parent" field of myCompLabeler.
 
