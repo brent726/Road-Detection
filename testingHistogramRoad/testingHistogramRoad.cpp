@@ -28,46 +28,37 @@ void removeSmallBlobs(Mat& im, Mat& origImage , double size)
 	
     //findContours( im, contours, hierarchy,CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
 	findContours( im, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE );
-	RNG rng(12345);
-	//Mat drawing=Mat::zeros( im.size(), CV_8UC3 );
-	vector<vector<Point> > contours_poly( contours.size() );
-	vector<Rect> boundRect( contours.size() );
-	vector<Point2f>center( contours.size() );
-	vector<float>radius( contours.size() );
-
+	
 	// iterate through each contour.
     for( int i = 0; i< contours.size(); i++ )
     {
         //  Find the area of contour
          a=contourArea( contours[i],false); 
 		printf("area:%lf\n",a);
-		//float epsilon = 0.1*arcLength(contours[i],true);
-		approxPolyDP( Mat(contours[i]), contours_poly[i], 0.001, true );
-        boundRect[i] = boundingRect( contours[i]);
-        //minEnclosingCircle( (Mat)contours_poly[i], center[i], radius[i] );
+
         if(a>largest_area){
-            //largest_area=a;cout<<i<<" area  "<<a<<endl;
+            largest_area=a;cout<<i<<" area  "<<a<<endl;
             // Store the index of largest contour
-           // largest_contour_index=i;               
+           largest_contour_index=i;               
             // Find the bounding rectangle for biggest contour
             //bounding_rect=boundingRect(contours[i]);
 		}
+		if
         //Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
         //drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, Point() );
 	}
+	 a=contourArea( contours[largest_contour_index],false); 
+	 printf("\nlargest area:%lf\n",a);
 	if (contours.size() > 0)
 	{
-		//drawContours(original, contours,largest_contour_index, CV_RGB(0, 255, 0), 2, 8, hierarchy);
+		drawContours(origImage, contours,largest_contour_index, CV_RGB(0, 255, 0), 2, 8, hierarchy);
 		//if want to show all contours use below one
-		drawContours(origImage,contours,-1, CV_RGB(0, 255, 0), 2, 8, hierarchy);
+		//drawContours(origImage,contours,-1, CV_RGB(0, 255, 0), 2, 8, hierarchy);
 	}
 	imshow("contour Image",origImage);
     //Scalar color( 255,255,255);  // color of the contour in the
-    //Scalar color( 255,255,255);
 	//Draw the contour and rectangle
     //drawContours( roadImage, contours,largest_contour_index, color, CV_FILLED,8,hierarchy);
-	//imshow("contoured Image",roadImage);
-	//imshow("contoured Image",origImage);
 }
 
 
