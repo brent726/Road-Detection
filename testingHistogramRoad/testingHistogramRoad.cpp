@@ -4,77 +4,110 @@
 #include "cv.h"
 #include "conio.h"
 #include <vector>   
-
+#include <windows.h>
+#include <iostream>
 using namespace cv;
 
 using namespace std;
 
 // Global variables
 //Mat inputImage[5], outputImage, channel[3], labImage, roadImage,labRoadImage;
-std::string colorSpace;
-bool showSingleChannel;
 
-void removeSmallBlobs(Mat& im, Mat& origImage , double size)
+
+void removeSmallBlobs(Mat& im, Mat& dstImg , double size)
 {
    int largest_contour_index=0;
    double largest_area=0;
-	double a;
-
+	double area;
     Rect bounding_rect;
     vector<vector<Point>> contours; // Vector for storing contour
     vector<Vec4i> hierarchy;
-
+	Mat dst;
 	/// Approximate contours to polygons + get bounding rects and circles
-	
-    //findContours( im, contours, hierarchy,CV_RETR_TREE, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
-	findContours( im, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_NONE );
+    findContours( im, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
+
+	for( int i = 0; i< contours.size(); i++ )
+    {
+		cv::drawContours(im, contours, i, Scalar(255, 255, 255), 1);
+	}
+	imshow("binary white filled Image",im);
+	waitKey(10);
 	
 	// iterate through each contour.
     for( int i = 0; i< contours.size(); i++ )
     {
-        //  Find the area of contour
-         a=contourArea( contours[i],false); 
-		printf("area:%lf\n",a);
+		area=contourArea( contours[i]); 
+		bounding_rect=boundingRect(contours[i]);
+		rectangle(dstImg, bounding_rect, Scalar(255,255,255), 2 );
+		rectangle(im, bounding_rect, Scalar(255,255,0), 1 );
+		//  Find the area of contour
+         drawContours(dstImg,contours,i, Scalar(200), 1, 8, hierarchy);
+		// Approximate contours to polygons + get bounding rects and circles for the new dstImage
+		 //destroyWindow("contourImage"); //destroy the window with the name, "MyWindow"
+	}
+	imshow("contour lines",dstImg);
+	findContours( dstImg, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
+	printf("\n");
+	
+	//waitKey(1000);
+	for( int i = 0; i< contours.size(); i++ )
+    {
+		drawContours( dstImg, contours,i, Scalar(255, 255, 255), CV_FILLED);	
+		//imshow("contourRoadImage",dstImg);	
+	}
+	int erode_size = 1;  
+    Mat erodeElement = getStructuringElement(cv::MORPH_RECT,Size(2 * erode_size + 1, 2* erode_size + 1),Point(erode_size, erode_size) );
+	
+	Mat erodeRectContourImg;
+	
+	//Apply erosion or dilation on the image
+    erode(dstImg,erodeRectContourImg,erodeElement); 
+	imshow("Result Road Erode Contour",dstImg);
+	dstImg=Scalar(0, 0, 0);
 
-        if(a>largest_area){
-            largest_area=a;cout<<i<<" area  "<<a<<endl;
-            // Store the index of largest contour
-           largest_contour_index=i;               
-            // Find the bounding rectangle for biggest contour
-            //bounding_rect=boundingRect(contours[i]);
+	for( int i = 0; i< contours.size(); i++ )
+    {
+		area=contourArea( contours[i]); 
+		if ((area>=0&&area<=size)||area<0)
+		{
+			drawContours( erodeRectContourImg, contours,i, Scalar(0, 0, 0), CV_FILLED);	
+			printf("removed rectangular area:%lf\n",area);
+			
 		}
-		if
-        //Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-        //drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, Point() );
+		else
+		{
+			drawContours( erodeRectContourImg, contours,i, Scalar(255, 255, 255), CV_FILLED);	
+			drawContours(dstImg,contours,i, Scalar(255,255,255), 1, 8, hierarchy);
+			//drawContours( dstImg, contours,i, Scalar(0, 0, 0), CV_FILLED);	
+			printf("rectangular area:%lf\n",area);
+		}
 	}
-	 a=contourArea( contours[largest_contour_index],false); 
-	 printf("\nlargest area:%lf\n",a);
-	if (contours.size() > 0)
-	{
-		drawContours(origImage, contours,largest_contour_index, CV_RGB(0, 255, 0), 2, 8, hierarchy);
-		//if want to show all contours use below one
-		//drawContours(origImage,contours,-1, CV_RGB(0, 255, 0), 2, 8, hierarchy);
-	}
-	imshow("contour Image",origImage);
-    //Scalar color( 255,255,255);  // color of the contour in the
-	//Draw the contour and rectangle
-    //drawContours( roadImage, contours,largest_contour_index, color, CV_FILLED,8,hierarchy);
+	
+
+
+	imshow("removal blob",dstImg);
+
 }
 
 
 int main(int argc, char** argv){
 	// read colored BGR image
-	//inputImage = imread("100mSnapshot1.png");
 	Mat inputImage[5], outputImage, channel[3], labImage, roadImage,labRoadImage;
 	int x,y,L,a,b;
 	int xSize, ySize;
-	//roadImage=imread("100mSnapshot1Crop.png");
 	roadImage=imread("100mSnapshot1.png");
+	Mat originalRoadImage=roadImage.clone();
+	imshow("Road Image",roadImage);
+	vector<vector<Point>> contours; // Vector for storing contour
+    vector<Vec4i> hierarchy;
+	GaussianBlur( roadImage, roadImage, Size( 11, 11 ), 0, 0 );
 	
 	cvtColor(roadImage, labRoadImage, COLOR_BGR2Lab);		
 
-	Mat binaryImage( roadImage.size().height,roadImage.size().width, CV_8UC1, Scalar(1));
-	imshow("Road Image",roadImage);
+	Mat binaryImage( roadImage.size().height,roadImage.size().width, CV_8UC1, Scalar(0));
+	
+	imshow("Road Image Blur",roadImage);
+
 	imshow("CIELAB ROAD Image", labRoadImage);
 	printf("Road Image Width= %d\n",roadImage.size().width);
 	printf("Road Image Height= %d\n",roadImage.size().height);
@@ -82,8 +115,6 @@ int main(int argc, char** argv){
 	{
 		for(int y=0;y<roadImage.size().height;y++)
 		{
-			//printf("Road Image x= %d ",x);
-			//printf("Road Image y= %d\n",y);
 			if((labRoadImage.at<Vec3b>(y,x)[1]>127)&&(labRoadImage.at<Vec3b>(y,x)[1]<133))  // these threshold values must be tuned or determined automatically!
 			{
 				
@@ -95,85 +126,40 @@ int main(int argc, char** argv){
 			}
 		}
 	}
-	//imshow("Binary Image", binaryImage);
-
-	//Mat sample=imread("contours.png");
-	////Mat graySample;
-	//cvtColor(sample, graySample, COLOR_BGR2GRAY);	
-	//threshold(graySample, graySample, 100, 255, THRESH_BINARY);
-	//imshow("Binary Image", graySample);
-	
-
-	
 
 	 // Create a structuring element (SE)
-    int morph_size = 4;
+    int morph_size = 6;
 	Mat element = getStructuringElement( MORPH_RECT, Size( 2*morph_size + 1, 2*morph_size+1 ), Point( morph_size, morph_size ) );
 	Mat morphImg;
 	for (int i=0;i<2;i++)
     {   
 		morphologyEx( binaryImage, morphImg, 2, element, Point(-1,-1), i );   
-		
-
-		//imshow("result", morphImg);
-		waitKey(1000);
     }   
-	imshow("Morph Binary Image", morphImg);
+	//imshow("Morph Binary Image", morphImg);
 
-	/*******coloring the image yellow no dilation********/
+	
+	Mat cannyImg;
+	Canny(morphImg,  cannyImg, 80, 80*3, 3 );
+	imshow("Result Road Canny",cannyImg);
+
+	Mat dstContourImg( roadImage.size().height,roadImage.size().width, CV_8UC1, Scalar(0));
+	removeSmallBlobs(cannyImg, dstContourImg ,10000);
+	/*******coloring the image dilatedCannyImg*******/
+
+	Mat roadImageSegmented=originalRoadImage.clone();
 	for(int x=0;x<roadImage.size().width;x++)
 	{
 		for(int y=0;y<roadImage.size().height;y++)
 		{
-			if(morphImg.at<uchar>(y, x) ==255)
+			if(dstContourImg.at<uchar>(y, x) !=255)
 			{
-				roadImage.at<Vec3b>(y,x)[2]=255;
-				roadImage.at<Vec3b>(y,x)[1]=255;
+				roadImageSegmented.at<Vec3b>(y,x)[2]=0;
+				roadImageSegmented.at<Vec3b>(y,x)[1]=0;
+				//roadImageSegmented.at<Vec3b>(y,x)[0]=0;
 			}
 		}
 	}
-
-	Mat cannyImg;
-	Canny(morphImg,  cannyImg, 20, 20*2, 3 );
-	imshow("Result Road Canny",cannyImg);
-	//imshow("Result Road Without Dilation",roadImage);
-	/*******coloring the image yellow no dilation********/
-	
-	//int dilation_size = 2;  
-    //Mat dilationElement = getStructuringElement(cv::MORPH_CROSS,Size(2 * dilation_size + 1, 2 * dilation_size + 1),Point(dilation_size, dilation_size) );
-	
-	//Mat dilatedImg;
-	// Apply erosion or dilation on the image
-     //dilate(morphImg,dilatedImg,element); 
-	 //imshow("Dilated Image",dilatedImg);
-
-
-	 /*******coloring the image yellow with dilation********/
-	for(int x=0;x<roadImage.size().width;x++)
-	{
-		for(int y=0;y<roadImage.size().height;y++)
-		{
-			//if(dilatedImg.at<uchar>(y, x) ==255)
-			//{
-				//roadImage.at<Vec3b>(y,x)[2]=255;
-				//roadImage.at<Vec3b>(y,x)[1]=255;
-			//}
-		}
-	}
-	//imshow("Result Road With Dilation",roadImage);
-	/*******coloring the image yellow with dilation********/
-
-
-	removeSmallBlobs(cannyImg, roadImage , 400);
-
-	//imshow("Result Road Contour",roadImage);
-	Mat cImage=imread("contours.png");
-	Mat grayCImage;
-	cvtColor(cImage, grayCImage, COLOR_BGR2GRAY);		
-	//removeSmallBlobs(grayCImage, cImage   , 400);
-	//imshow("Result Contour",cImage);
-	//if(colorSpace == "lab") 	showLAB();
-	// prevent from closing
+	imshow("Result Road Contour",roadImageSegmented);
 	waitKey(0);
 	return 0;
 }
