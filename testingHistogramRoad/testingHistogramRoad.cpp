@@ -31,7 +31,7 @@ void removeSmallBlobs(Mat& im, Mat& dstImg , double size)
 		cv::drawContours(im, contours, i, Scalar(255, 255, 255), 1);
 	}
 	imshow("binary white filled Image",im);
-	waitKey(10);
+	//waitKey(10);
 	
 	// iterate through each contour.
     for( int i = 0; i< contours.size(); i++ )
@@ -39,7 +39,7 @@ void removeSmallBlobs(Mat& im, Mat& dstImg , double size)
 		area=contourArea( contours[i]); 
 		bounding_rect=boundingRect(contours[i]);
 		rectangle(dstImg, bounding_rect, Scalar(255,255,255), 2 );
-		rectangle(im, bounding_rect, Scalar(255,255,0), 1 );
+		rectangle(im, bounding_rect, Scalar(255,255,255), 1 );
 		//  Find the area of contour
          drawContours(dstImg,contours,i, Scalar(200), 1, 8, hierarchy);
 		// Approximate contours to polygons + get bounding rects and circles for the new dstImage
@@ -75,17 +75,43 @@ void removeSmallBlobs(Mat& im, Mat& dstImg , double size)
 			
 		}
 		else
-		{
+		{	
 			drawContours( erodeRectContourImg, contours,i, Scalar(255, 255, 255), CV_FILLED);	
-			drawContours(dstImg,contours,i, Scalar(255,255,255), 1, 8, hierarchy);
+			
+			//drawContours( dstImg, contours,i, Scalar(255, 255, 255), CV_FILLED);	
 			//drawContours( dstImg, contours,i, Scalar(0, 0, 0), CV_FILLED);	
 			printf("rectangular area:%lf\n",area);
 		}
 	}
-	
-
-
+	findContours( erodeRectContourImg, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
+	for(int i=0;i<contours.size();i++)
+	{
+		bounding_rect=boundingRect(contours[i]);
+		rectangle(erodeRectContourImg, bounding_rect, Scalar(255,255,255), 1 );
+		//drawContours( erodeRectContourImg, contours,i, Scalar(255, 255, 255), CV_FILLED);	
+	}
+	findContours( erodeRectContourImg, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
+	for(int i=0;i<contours.size();i++)
+	{
+		//bounding_rect=boundingRect(contours[i]);
+		//rectangle(erodeRectContourImg, bounding_rect, Scalar(255,255,255), 1 );
+		drawContours( erodeRectContourImg, contours,i, Scalar(255, 255, 255), CV_FILLED);	
+	}
+	findContours( erodeRectContourImg, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
+	for(int i=0;i<contours.size();i++)
+	{
+		//bounding_rect=boundingRect(contours[i]);
+		//rectangle(erodeRectContourImg, bounding_rect, Scalar(255,255,255), 1 );
+		drawContours(dstImg,contours,i, Scalar(255), 1, 8, hierarchy);
+	}
 	imshow("removal blob",dstImg);
+	findContours( dstImg, contours, hierarchy,RETR_TREE, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
+	for(int i=0;i<contours.size();i++)
+	{
+		drawContours(dstImg,contours,i, Scalar(255), 1, 8, hierarchy);
+	}
+	imshow("points blob",dstImg);
+	
 
 }
 
@@ -100,7 +126,7 @@ int main(int argc, char** argv){
 	imshow("Road Image",roadImage);
 	vector<vector<Point>> contours; // Vector for storing contour
     vector<Vec4i> hierarchy;
-	GaussianBlur( roadImage, roadImage, Size( 11, 11 ), 0, 0 );
+	GaussianBlur( roadImage, roadImage, Size( 3, 3 ), 0, 0 );
 	
 	cvtColor(roadImage, labRoadImage, COLOR_BGR2Lab);		
 
@@ -139,7 +165,7 @@ int main(int argc, char** argv){
 
 	
 	Mat cannyImg;
-	Canny(morphImg,  cannyImg, 80, 80*3, 3 );
+	Canny(morphImg,  cannyImg, 50,50*3, 3 );
 	imshow("Result Road Canny",cannyImg);
 
 	Mat dstContourImg( roadImage.size().height,roadImage.size().width, CV_8UC1, Scalar(0));
@@ -153,9 +179,9 @@ int main(int argc, char** argv){
 		{
 			if(dstContourImg.at<uchar>(y, x) !=255)
 			{
-				roadImageSegmented.at<Vec3b>(y,x)[2]=0;
+				//roadImageSegmented.at<Vec3b>(y,x)[2]=0;
 				roadImageSegmented.at<Vec3b>(y,x)[1]=0;
-				//roadImageSegmented.at<Vec3b>(y,x)[0]=0;
+				roadImageSegmented.at<Vec3b>(y,x)[0]=0;
 			}
 		}
 	}
