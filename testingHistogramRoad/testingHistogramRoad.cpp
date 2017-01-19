@@ -12,12 +12,27 @@ using namespace std;
 
 // Global variables
 //Mat inputImage[5], outputImage, channel[3], labImage, roadImage,labRoadImage;
+void CallBackFunc(int event, int x, int y, int flags, void* userdata)
+{
+     if  ( event == EVENT_LBUTTONDOWN )
+     {
+          cout << "Left button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
+     }
+     else if  ( event == EVENT_RBUTTONDOWN )
+     {
+          cout << "Right button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
+     }
+     else if  ( event == EVENT_MBUTTONDOWN )
+     {
+          cout << "Middle button of the mouse is clicked - position (" << x << ", " << y << ")" << endl;
+     }
+    
+}
 
 
 void removeSmallBlobs(Mat& im, Mat& dstImg , double size)
 {
-   int largest_contour_index=0;
-   double largest_area=0;
+
 	double area;
     Rect bounding_rect;
     vector<vector<Point>> contours; // Vector for storing contour
@@ -98,11 +113,14 @@ void removeSmallBlobs(Mat& im, Mat& dstImg , double size)
 		drawContours( erodeRectContourImg, contours,i, Scalar(255, 255, 255), CV_FILLED);	
 	}
 	findContours( erodeRectContourImg, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
+	
 	for(int i=0;i<contours.size();i++)
 	{
 		//bounding_rect=boundingRect(contours[i]);
 		//rectangle(erodeRectContourImg, bounding_rect, Scalar(255,255,255), 1 );
 		drawContours(dstImg,contours,i, Scalar(255), 1, 8, hierarchy);
+		 
+		
 	}
 	imshow("removal blob",dstImg);
 	findContours( dstImg, contours, hierarchy,RETR_TREE, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
@@ -110,14 +128,33 @@ void removeSmallBlobs(Mat& im, Mat& dstImg , double size)
 	{
 		drawContours(dstImg,contours,i, Scalar(255), 1, 8, hierarchy);
 	}
+
+	vector<Point> pts;
+	int x=0;
+	for(int i= 0; i < contours.size(); i++)
+	{
+		for(int j= 0; j < contours[i].size();j++) // run until j < contours[i].size();
+		{	
+			cout << contours[i][j] << endl; //do whatever
+			//pts[x]=contours[i][j];
+			//x++;
+		}
+	}
+
+
+	
+	//printf("extLeft: %d",extLeft);
 	imshow("points blob",dstImg);
 	
-
+	//set the callback function for any mouse event
+     setMouseCallback("points blob", CallBackFunc, NULL);
+	 
 }
 
 
 int main(int argc, char** argv){
 	// read colored BGR image
+
 	Mat inputImage[5], outputImage, channel[3], labImage, roadImage,labRoadImage;
 	int x,y,L,a,b;
 	int xSize, ySize;
@@ -170,6 +207,7 @@ int main(int argc, char** argv){
 
 	Mat dstContourImg( roadImage.size().height,roadImage.size().width, CV_8UC1, Scalar(0));
 	removeSmallBlobs(cannyImg, dstContourImg ,10000);
+	
 	/*******coloring the image dilatedCannyImg*******/
 
 	Mat roadImageSegmented=originalRoadImage.clone();
@@ -186,6 +224,8 @@ int main(int argc, char** argv){
 		}
 	}
 	imshow("Result Road Contour",roadImageSegmented);
+
+
 	waitKey(0);
 	return 0;
 }
