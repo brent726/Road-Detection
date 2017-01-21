@@ -1,4 +1,4 @@
-﻿Build started 1/19/2017 7:17:47 PM.
+﻿Build started 1/21/2017 5:53:29 PM.
      1>Project "C:\Users\PCBLAB_01\Desktop\Road-Detection github\Road-Detection\testingHistogramRoad\testingHistogramRoad.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\testingHistogramRoad.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -9,22 +9,20 @@
      1>c:\opencv\build\include\opencv2\flann\logger.h(66): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
      1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(44): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(52): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(68): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(83): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(102): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(109): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(117): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(127): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(134): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(136): warning C4018: '<' : signed/unsigned mismatch
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(159): warning C4101: 'a' : unreferenced local variable
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(159): warning C4101: 'y' : unreferenced local variable
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(159): warning C4101: 'x' : unreferenced local variable
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(160): warning C4101: 'xSize' : unreferenced local variable
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(160): warning C4101: 'ySize' : unreferenced local variable
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(159): warning C4101: 'b' : unreferenced local variable
-     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(159): warning C4101: 'L' : unreferenced local variable
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(53): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(76): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(93): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(115): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(123): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(133): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(144): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(178): warning C4101: 'a' : unreferenced local variable
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(178): warning C4101: 'y' : unreferenced local variable
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(178): warning C4101: 'x' : unreferenced local variable
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(179): warning C4101: 'xSize' : unreferenced local variable
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(179): warning C4101: 'ySize' : unreferenced local variable
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(178): warning C4101: 'b' : unreferenced local variable
+     1>c:\users\pcblab_01\desktop\road-detection github\road-detection\testinghistogramroad\testinghistogramroad.cpp(178): warning C4101: 'L' : unreferenced local variable
        ManifestResourceCompile:
          All outputs are up-to-date.
        Link:
@@ -44,4 +42,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.68
+Time Elapsed 00:00:03.11
