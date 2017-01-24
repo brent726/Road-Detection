@@ -149,21 +149,21 @@ void removeSmallBlobs(Mat& im, Mat& dstImg , double size)
 	}
 
 	 // Find the convex hull object for each contour
-	/* vector<vector<Point> >hull( contours.size() );
+	vector<vector<Point> >hull( contours.size() );
 	 for( int i = 0; i < contours.size(); i++ )
 	 {  convexHull( Mat(contours[i]), hull[i], false ); }
  
 	 // Draw contours + hull results
-	 RNG rng;
-	 Mat drawing = Mat::zeros( threshold_output.size(), CV_8UC3 );
-	 for( int i = 0; i< contours.size(); i++ )
+	// RNG rng;
+	 //Mat drawing = Mat::zeros( threshold_output.size(), CV_8UC3 );
+	/* for( int i = 0; i< contours.size(); i++ )
 	 {
 	  Scalar color = Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
 	  drawContours( drawing, contours, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
 	  drawContours( drawing, hull, i, color, 1, 8, vector<Vec4i>(), 0, Point() );
 	 }*/
 
-	/*vector<Point> pts;
+	vector<Point> pts;
 	int x=0;
 	for(int i= 0; i < contours.size(); i++)
 	{
@@ -182,7 +182,7 @@ void removeSmallBlobs(Mat& im, Mat& dstImg , double size)
 
 	
 	//set the callback function for any mouse event
-     setMouseCallback("points blob", CallBackFunc, NULL);*/
+     setMouseCallback("points blob", CallBackFunc, NULL);
 	 
 }
 
