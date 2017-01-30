@@ -54,7 +54,7 @@ void removeSmallBlobs(Mat& im, Mat& dstImg,Mat roadImage )
 					}
 				}
 			}
-			imshow("Image", im);
+			//imshow("Image", im);
 			int counter=0;
 			int arrayPercent[1280];
 			float percentage;
@@ -91,12 +91,12 @@ void removeSmallBlobs(Mat& im, Mat& dstImg,Mat roadImage )
 				}
 			}
 
-	imshow("bin",im);
+	//imshow("bin",im);
 
 	int dilate_size =2;  
     Mat dilateElement = getStructuringElement(cv::MORPH_RECT,Size(2 * dilate_size + 1, 2* dilate_size + 1),Point(dilate_size, dilate_size) );
 		
-	for(int i=0;i<10;i++)
+	for(int i=0;i<6;i++)
 	{
 		//Apply erosion or dilation on the image
 		dilate(im,im,dilateElement); 	
@@ -117,18 +117,18 @@ void removeSmallBlobs(Mat& im, Mat& dstImg,Mat roadImage )
 		   bounding_rect=boundingRect(contours[i]); // Find the bounding rectangle for biggest contour
 	   }
 	}
-	drawContours(dstImg,contours,largest_contour_index, Scalar(255), 1, 8, hierarchy);
-	//drawContours( dstImg,contours,largest_contour_index, Scalar(255, 255, 255), CV_FILLED);	
+	//drawContours(dstImg,contours,largest_contour_index, Scalar(255), 1, 8, hierarchy);
+	drawContours( dstImg,contours,largest_contour_index, Scalar(255, 255, 255), CV_FILLED);	
 	imshow("largest area",dstImg);
 	
 	
-	findContours( dstImg, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
+	//findContours( dstImg, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
 	vector<Point> vert(8);
 	 y=0;
 	 x=0;
 		
 	 int arrayX[4], arrayY[4];
-	for(int i= 0; i < contours.size(); i++)
+	/*for(int i= 0; i < contours.size(); i++)
 	{
 		for(int j= 0; j < contours[i].size();j++) // run until j < contours[i].size();
 		{	
@@ -151,7 +151,7 @@ void removeSmallBlobs(Mat& im, Mat& dstImg,Mat roadImage )
 		for(int j= 0; j <roadImage.size().height;j++) // run until j < contours[i].size();
 		{	
 		}
-	}	
+	}	*/
 
 	setMouseCallback("largest area", CallBackFunc, NULL);
 }
@@ -165,28 +165,28 @@ int main(int argc, char** argv){
 	int xSize, ySize;
 	Mat originalRoadImage;
 	
-	roadImage=imread("1.jpg");
-	//VideoCapture capture("Take 2(60m).mp4");
+	//roadImage=imread("1.jpg");
+	VideoCapture capture("60m(straight).MP4");
 	//imshow("Road Image",roadImage);
 
 
-	//double dWidth = capture.get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
-	//double dHeight = capture.get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
+	double dWidth = capture.get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
+	double dHeight = capture.get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
 
 	//std::cout << "Frame Size = " << dWidth << "x" << dHeight << std::endl;
 
 	//-Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
 
 	//VideoWriter oVideoWriter ("LaneDetection.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true); //initialize the VideoWriter object 
-	//namedWindow( "Video", 1);
-    //while (1)
-     //{
-           	//capture >> roadImage;
+	namedWindow( "Video", 1);
+    while (1)
+     {
+            capture >> roadImage;
 			originalRoadImage=roadImage.clone();
-			//if(roadImage.empty())
-			//{
-				//break;
-			//}
+			if(roadImage.empty())
+			{
+				break;
+			}
 			Mat gradImage;
 			Mat roadBlurImage;
 			//GaussianBlur( roadImage, roadBlurImage, Size(3,3), 0, 0, BORDER_DEFAULT );
@@ -204,7 +204,7 @@ int main(int argc, char** argv){
 
 			Mat dstContourImg( roadImage.size().height,roadImage.size().width, CV_8UC1, Scalar(0));
 			removeSmallBlobs(binaryImage, dstContourImg, roadImage);
-	
+
 			/*******coloring the image dilatedCannyImg*******/
 
 			Mat roadImageSegmented=originalRoadImage.clone();
@@ -214,15 +214,17 @@ int main(int argc, char** argv){
 				{
 					if(dstContourImg.at<uchar>(y, x)==255)
 					{
-						roadImageSegmented.at<Vec3b>(y,x)[1]=255;
-						roadImageSegmented.at<Vec3b>(y,x)[0]=255;
-						roadImageSegmented.at<Vec3b>(y,x)[2]=255;
+						roadImageSegmented.at<Vec3b>(y,x)[1]=0;
+						roadImageSegmented.at<Vec3b>(y,x)[0]=0;
+						//roadImageSegmented.at<Vec3b>(y,x)[2]=255;
 					}
 				}
 			}
 			
-			//imshow("Result Road Contour",roadImageSegmented);
-			 waitKey(0); // waits to display frame
+			imshow("Result Road Contour",roadImageSegmented);
+			waitKey(10); // waits to display frame
+	}
+	waitKey(0);
 	return 0;
 }
 
