@@ -71,8 +71,8 @@ void removeSmallBlobs(Mat& im, Mat& dstImg,Mat roadImage )
 					}
 				}
 				percentage=(float)counter/im.size().width;
-				printf("y:%d, percentage: %f\n",y,percentage);
-				fprintf(f," %d, %f\n",y,percentage);
+				//printf("y:%d, percentage: %f\n",y,percentage);
+				//fprintf(f," %d, %f\n",y,percentage);
 				if(percentage>=0.65)
 				{
 					arrayPercent[y]=255;
@@ -119,7 +119,7 @@ void removeSmallBlobs(Mat& im, Mat& dstImg,Mat roadImage )
 	}
 	//drawContours(dstImg,contours,largest_contour_index, Scalar(255), 1, 8, hierarchy);
 	drawContours( dstImg,contours,largest_contour_index, Scalar(255, 255, 255), CV_FILLED);	
-	imshow("largest area",dstImg);
+	//imshow("largest area",dstImg);
 	
 	
 	//findContours( dstImg, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
@@ -166,7 +166,8 @@ int main(int argc, char** argv){
 	Mat originalRoadImage;
 	
 	//roadImage=imread("1.jpg");
-	VideoCapture capture("60m(straight).MP4");
+	//VideoCapture capture("60m(straight).MP4");
+	VideoCapture capture("\\\\Mac\\Home\\Desktop\\edited60m.avi");
 	//imshow("Road Image",roadImage);
 
 
@@ -175,10 +176,10 @@ int main(int argc, char** argv){
 
 	//std::cout << "Frame Size = " << dWidth << "x" << dHeight << std::endl;
 
-	//-Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
+	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
 
-	//VideoWriter oVideoWriter ("LaneDetection.avi", CV_FOURCC('P','I','M','1'), 20, frameSize, true); //initialize the VideoWriter object 
-	namedWindow( "Video", 1);
+	VideoWriter oVideoWriter ("detection.avi", CV_FOURCC('P','I','M','1'), 30, frameSize, true); //initialize the VideoWriter object 
+	//namedWindow( "Video", 1);
     while (1)
      {
             capture >> roadImage;
@@ -189,17 +190,17 @@ int main(int argc, char** argv){
 			}
 			Mat gradImage;
 			Mat roadBlurImage;
-			//GaussianBlur( roadImage, roadBlurImage, Size(3,3), 0, 0, BORDER_DEFAULT );
+			GaussianBlur( roadImage, roadBlurImage, Size(3,3), 0, 0, BORDER_DEFAULT );
 			/// Total Gradient (approximate)
-			//addWeighted( roadImage, 1, roadBlurImage, 1, 0, gradImage);
+			addWeighted( roadImage, 1, roadBlurImage, 1, 0, gradImage);
 
 			//imshow( "Road Image Sobel", gradImage );
-			//roadImage=gradImage.clone();
+			roadImage=gradImage.clone();
 				
 
 			Mat binaryImage( roadImage.size().height,roadImage.size().width, CV_8UC1, Scalar(0));
-			printf("Road Image Width= %d\n",roadImage.size().width);
-			printf("Road Image Height= %d\n",roadImage.size().height);
+			//printf("Road Image Width= %d\n",roadImage.size().width);
+			//printf("Road Image Height= %d\n",roadImage.size().height);
 			
 
 			Mat dstContourImg( roadImage.size().height,roadImage.size().width, CV_8UC1, Scalar(0));
@@ -220,10 +221,11 @@ int main(int argc, char** argv){
 					}
 				}
 			}
-			
-			imshow("Result Road Contour",roadImageSegmented);
+			 oVideoWriter.write(roadImageSegmented); //writer the frame into the file
+			//imshow("Result Road Contour",roadImageSegmented);
 			waitKey(10); // waits to display frame
 	}
+	printf("DONE");
 	waitKey(0);
 	return 0;
 }

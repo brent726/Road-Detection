@@ -1,7 +1,7 @@
-﻿Build started 30/01/2017 3:26:23 AM.
+﻿Build started 01/02/2017 12:07:44 AM.
      1>Project "\\Mac\Home\Desktop\Road-Detection\testingHistogramRoad\testingHistogramRoad.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
-         Touching "Debug\testingHistogramRoad.unsuccessfulbuild".
+         Creating "Debug\testingHistogramRoad.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
          All outputs are up-to-date.
          C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /IC:\opencv\build\include /IC:\opencv\build\include\opencv /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt testingHistogramRoad.cpp
@@ -11,9 +11,9 @@
      1>\\mac\home\desktop\road-detection\testinghistogramroad\testinghistogramroad.cpp(63): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files\microsoft visual studio 10.0\vc\include\stdio.h(234) : see declaration of 'fopen'
      1>\\mac\home\desktop\road-detection\testinghistogramroad\testinghistogramroad.cpp(110): warning C4018: '<' : signed/unsigned mismatch
-     1>\\mac\home\desktop\road-detection\testinghistogramroad\testinghistogramroad.cpp(131): warning C4018: '<' : signed/unsigned mismatch
-     1>\\mac\home\desktop\road-detection\testinghistogramroad\testinghistogramroad.cpp(133): warning C4018: '<' : signed/unsigned mismatch
+     1>\\mac\home\desktop\road-detection\testinghistogramroad\testinghistogramroad.cpp(130): warning C4101: 'arrayX' : unreferenced local variable
      1>\\mac\home\desktop\road-detection\testinghistogramroad\testinghistogramroad.cpp(36): warning C4101: 'area' : unreferenced local variable
+     1>\\mac\home\desktop\road-detection\testinghistogramroad\testinghistogramroad.cpp(130): warning C4101: 'arrayY' : unreferenced local variable
      1>\\mac\home\desktop\road-detection\testinghistogramroad\testinghistogramroad.cpp(164): warning C4101: 'a' : unreferenced local variable
      1>\\mac\home\desktop\road-detection\testinghistogramroad\testinghistogramroad.cpp(164): warning C4101: 'y' : unreferenced local variable
      1>\\mac\home\desktop\road-detection\testinghistogramroad\testinghistogramroad.cpp(164): warning C4101: 'x' : unreferenced local variable
@@ -40,4 +40,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:13.07
+Time Elapsed 00:00:15.91
