@@ -30,7 +30,7 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 }
 
 
-void removeSmallBlobs(Mat& im, Mat& dstImg,Mat roadImage )
+void roadDetection(Mat& im, Mat& dstImg,Mat roadImage )
 {
 	int x,y;
 	double area;
@@ -165,29 +165,29 @@ int main(int argc, char** argv){
 	int xSize, ySize;
 	Mat originalRoadImage;
 	
-	//roadImage=imread("1.jpg");
+	roadImage=imread("1.jpg");
 	//VideoCapture capture("60m(straight).MP4");
-	VideoCapture capture("\\\\Mac\\Home\\Desktop\\edited60m.avi");
+	//VideoCapture capture("\\\\Mac\\Home\\Desktop\\edited60m.avi");
 	//imshow("Road Image",roadImage);
 
 
-	double dWidth = capture.get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
-	double dHeight = capture.get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
+	//double dWidth = capture.get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
+	//double dHeight = capture.get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
 
 	//std::cout << "Frame Size = " << dWidth << "x" << dHeight << std::endl;
 
-	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
+	//Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
 
-	VideoWriter oVideoWriter ("detection.avi", CV_FOURCC('P','I','M','1'), 30, frameSize, true); //initialize the VideoWriter object 
+	//VideoWriter oVideoWriter ("detection.avi", CV_FOURCC('P','I','M','1'), 30, frameSize, true); //initialize the VideoWriter object 
 	//namedWindow( "Video", 1);
-    while (1)
-     {
-            capture >> roadImage;
+    //while (1)
+     //{
+            //capture >> roadImage;
 			originalRoadImage=roadImage.clone();
-			if(roadImage.empty())
-			{
-				break;
-			}
+			//if(roadImage.empty())
+			//{
+				//break;
+			//}
 			Mat gradImage;
 			Mat roadBlurImage;
 			GaussianBlur( roadImage, roadBlurImage, Size(3,3), 0, 0, BORDER_DEFAULT );
@@ -204,7 +204,7 @@ int main(int argc, char** argv){
 			
 
 			Mat dstContourImg( roadImage.size().height,roadImage.size().width, CV_8UC1, Scalar(0));
-			removeSmallBlobs(binaryImage, dstContourImg, roadImage);
+			roadDetection(binaryImage, dstContourImg, roadImage);
 
 			/*******coloring the image dilatedCannyImg*******/
 
@@ -221,12 +221,11 @@ int main(int argc, char** argv){
 					}
 				}
 			}
-			 oVideoWriter.write(roadImageSegmented); //writer the frame into the file
-			//imshow("Result Road Contour",roadImageSegmented);
-			waitKey(10); // waits to display frame
-	}
-	printf("DONE");
+			// oVideoWriter.write(roadImageSegmented); //writer the frame into the file
+			imshow("Result Road Contour",roadImageSegmented);
+			//waitKey(10); // waits to display frame
+	//}
+	//printf("DONE");
 	waitKey(0);
 	return 0;
 }
-

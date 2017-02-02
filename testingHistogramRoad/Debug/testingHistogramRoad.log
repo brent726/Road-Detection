@@ -1,4 +1,4 @@
-﻿Build started 01/02/2017 12:07:44 AM.
+﻿Build started 02/02/2017 12:19:17 AM.
      1>Project "\\Mac\Home\Desktop\Road-Detection\testingHistogramRoad\testingHistogramRoad.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\testingHistogramRoad.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -40,4 +40,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:15.91
+Time Elapsed 00:00:22.02
