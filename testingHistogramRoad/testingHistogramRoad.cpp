@@ -30,15 +30,25 @@ void CallBackFunc(int event, int x, int y, int flags, void* userdata)
 }
 
 
-void roadDetection(Mat& im, Mat& dstImg,Mat roadImage )
+void roadDetection(Mat& im, Mat& dstImg,Mat roadImage,vector<vector<Point>> &contours )
 {
 	int x,y;
 	double area;
     Rect bounding_rect;
-    vector<vector<Point>> contours; // Vector for storing contour
+    
     vector<Vec4i> hierarchy;
 	Mat dst;
 	Mat labRoadImage;
+
+
+	Mat gradImage;
+	Mat roadBlurImage;
+	GaussianBlur( roadImage, roadBlurImage, Size(3,3), 0, 0, BORDER_DEFAULT );
+	/// Total Gradient (approximate)
+	addWeighted( roadImage, 1, roadBlurImage, 1, 0, gradImage);
+
+	//imshow( "Road Image Sobel", gradImage );
+	roadImage=gradImage.clone();
 	cvtColor(roadImage, labRoadImage, COLOR_BGR2Lab);	
 	for( x=0;x<roadImage.size().width;x++)
 			{
@@ -54,6 +64,18 @@ void roadDetection(Mat& im, Mat& dstImg,Mat roadImage )
 					}
 				}
 			}
+
+	// Create a structuring element (SE)
+		int morph_size = 2;
+		Mat element = getStructuringElement( MORPH_RECT, Size( 2*morph_size + 1, 2*morph_size+1 ), Point( morph_size, morph_size ) );
+	
+		for (int i=0;i<2;i++)
+		{   
+				morphologyEx( im, im, 2, element, Point(-1,-1), i );   
+		}   
+		imshow("Morph Binary Image", im);
+		//Canny(im,im,50,150);
+		//imshow("Canny Image", im);
 			//imshow("Image", im);
 			int counter=0;
 			int arrayPercent[1280];
@@ -72,8 +94,8 @@ void roadDetection(Mat& im, Mat& dstImg,Mat roadImage )
 				}
 				percentage=(float)counter/im.size().width;
 				//printf("y:%d, percentage: %f\n",y,percentage);
-				//fprintf(f," %d, %f\n",y,percentage);
-				if(percentage>=0.65)
+				fprintf(f," %d, %f\n",y,percentage);
+				if(percentage>=0.70)
 				{
 					arrayPercent[y]=255;
 				}
@@ -91,7 +113,10 @@ void roadDetection(Mat& im, Mat& dstImg,Mat roadImage )
 				}
 			}
 
-	//imshow("bin",im);
+	
+
+	
+	imshow("bin",im);
 
 	int dilate_size =2;  
     Mat dilateElement = getStructuringElement(cv::MORPH_RECT,Size(2 * dilate_size + 1, 2* dilate_size + 1),Point(dilate_size, dilate_size) );
@@ -106,6 +131,8 @@ void roadDetection(Mat& im, Mat& dstImg,Mat roadImage )
 	double largest_area=0;
 	double a;
 	int largest_contour_index;
+
+
 	findContours( im, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
 	for( int i = 0; i< contours.size(); i++ )
     {
@@ -123,11 +150,11 @@ void roadDetection(Mat& im, Mat& dstImg,Mat roadImage )
 	
 	
 	//findContours( dstImg, contours, hierarchy,CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE,Point(0,0) );
-	vector<Point> vert(8);
-	 y=0;
-	 x=0;
+	//vector<Point> vert(8);
+	// y=0;
+	// x=0;
 		
-	 int arrayX[4], arrayY[4];
+	// int arrayX[4], arrayY[4];
 	/*for(int i= 0; i < contours.size(); i++)
 	{
 		for(int j= 0; j < contours[i].size();j++) // run until j < contours[i].size();
@@ -153,7 +180,7 @@ void roadDetection(Mat& im, Mat& dstImg,Mat roadImage )
 		}
 	}	*/
 
-	setMouseCallback("largest area", CallBackFunc, NULL);
+	
 }
 
 
@@ -164,8 +191,10 @@ int main(int argc, char** argv){
 	int x,y,L,a,b;
 	int xSize, ySize;
 	Mat originalRoadImage;
-	
+	vector<vector<Point>> contours; // Vector for storing contour
+
 	roadImage=imread("1.jpg");
+	//roadImage=imread("100mSnapshot1Crop.png");
 	//VideoCapture capture("60m(straight).MP4");
 	//VideoCapture capture("\\\\Mac\\Home\\Desktop\\edited60m.avi");
 	//imshow("Road Image",roadImage);
@@ -188,14 +217,7 @@ int main(int argc, char** argv){
 			//{
 				//break;
 			//}
-			Mat gradImage;
-			Mat roadBlurImage;
-			GaussianBlur( roadImage, roadBlurImage, Size(3,3), 0, 0, BORDER_DEFAULT );
-			/// Total Gradient (approximate)
-			addWeighted( roadImage, 1, roadBlurImage, 1, 0, gradImage);
-
-			//imshow( "Road Image Sobel", gradImage );
-			roadImage=gradImage.clone();
+			
 				
 
 			Mat binaryImage( roadImage.size().height,roadImage.size().width, CV_8UC1, Scalar(0));
@@ -204,7 +226,7 @@ int main(int argc, char** argv){
 			
 
 			Mat dstContourImg( roadImage.size().height,roadImage.size().width, CV_8UC1, Scalar(0));
-			roadDetection(binaryImage, dstContourImg, roadImage);
+			roadDetection(binaryImage, dstContourImg, roadImage, contours);
 
 			/*******coloring the image dilatedCannyImg*******/
 
@@ -221,8 +243,9 @@ int main(int argc, char** argv){
 					}
 				}
 			}
-			// oVideoWriter.write(roadImageSegmented); //writer the frame into the file
+			//oVideoWriter.write(roadImageSegmented); //writer the frame into the file
 			imshow("Result Road Contour",roadImageSegmented);
+			setMouseCallback("Result Road Contour", CallBackFunc, NULL);
 			//waitKey(10); // waits to display frame
 	//}
 	//printf("DONE");
