@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "highgui.h"
 #include "cv.h"
@@ -73,7 +72,7 @@ void roadDetection(Mat& im, Mat& dstImg,Mat roadImage,vector<vector<Point>> &con
 		{   
 				morphologyEx( im, im, 2, element, Point(-1,-1), i );   
 		}   
-		imshow("Morph Binary Image", im);
+		//imshow("Morph Binary Image", im);
 		//Canny(im,im,50,150);
 		//imshow("Canny Image", im);
 			//imshow("Image", im);
@@ -94,8 +93,8 @@ void roadDetection(Mat& im, Mat& dstImg,Mat roadImage,vector<vector<Point>> &con
 				}
 				percentage=(float)counter/im.size().width;
 				//printf("y:%d, percentage: %f\n",y,percentage);
-				fprintf(f," %d, %f\n",y,percentage);
-				if(percentage>=0.70)
+				//fprintf(f," %d, %f\n",y,percentage);
+				if(percentage>=0.65)
 				{
 					arrayPercent[y]=255;
 				}
@@ -116,7 +115,7 @@ void roadDetection(Mat& im, Mat& dstImg,Mat roadImage,vector<vector<Point>> &con
 	
 
 	
-	imshow("bin",im);
+	//imshow("bin",im);
 
 	int dilate_size =2;  
     Mat dilateElement = getStructuringElement(cv::MORPH_RECT,Size(2 * dilate_size + 1, 2* dilate_size + 1),Point(dilate_size, dilate_size) );
@@ -196,27 +195,30 @@ int main(int argc, char** argv){
 	roadImage=imread("1.jpg");
 	//roadImage=imread("100mSnapshot1Crop.png");
 	//VideoCapture capture("60m(straight).MP4");
-	//VideoCapture capture("\\\\Mac\\Home\\Desktop\\edited60m.avi");
+	VideoCapture capture("\\\\Mac\\Home\\Desktop\\DroneVideos\\1stVideoFeb8(edited).mp4");
 	//imshow("Road Image",roadImage);
 
 
-	//double dWidth = capture.get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
-	//double dHeight = capture.get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
+	double dWidth = capture.get(CV_CAP_PROP_FRAME_WIDTH); //get the width of frames of the video
+	double dHeight = capture.get(CV_CAP_PROP_FRAME_HEIGHT); //get the height of frames of the video
 
 	//std::cout << "Frame Size = " << dWidth << "x" << dHeight << std::endl;
 
-	//Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
+	Size frameSize(static_cast<int>(dWidth), static_cast<int>(dHeight));
 
-	//VideoWriter oVideoWriter ("detection.avi", CV_FOURCC('P','I','M','1'), 30, frameSize, true); //initialize the VideoWriter object 
+	VideoWriter oVideoWriter ("detection.avi", CV_FOURCC('P','I','M','1'), 30, frameSize, true); //initialize the VideoWriter object 
 	//namedWindow( "Video", 1);
-    //while (1)
-     //{
-            //capture >> roadImage;
+	int i=0;
+    while (1)
+    {
+			system("CLS");
+			printf("Frame:%d",++i);
+            capture >> roadImage;
 			originalRoadImage=roadImage.clone();
-			//if(roadImage.empty())
-			//{
-				//break;
-			//}
+			if(roadImage.empty())
+			{
+				break;
+			}
 			
 				
 
@@ -243,11 +245,11 @@ int main(int argc, char** argv){
 					}
 				}
 			}
-			//oVideoWriter.write(roadImageSegmented); //writer the frame into the file
-			imshow("Result Road Contour",roadImageSegmented);
-			setMouseCallback("Result Road Contour", CallBackFunc, NULL);
-			//waitKey(10); // waits to display frame
-	//}
+			oVideoWriter.write(roadImageSegmented); //writer the frame into the file
+			//imshow("Result Road Contour",roadImageSegmented);
+			//setMouseCallback("Result Road Contour", CallBackFunc, NULL);
+			waitKey(10); // waits to display frame
+	}
 	//printf("DONE");
 	waitKey(0);
 	return 0;

@@ -1,5 +1,5 @@
-﻿Build started 2/3/2017 4:23:24 PM.
-     1>Project "C:\Users\PCBLAB_01\Desktop\Road-Detection github\Road-Detection\testingHistogramRoad\testingHistogramRoad.vcxproj" on node 2 (build target(s)).
+﻿Build started 08/02/2017 11:01:50 PM.
+     1>Project "\\Mac\Home\Desktop\Road-Detection\testingHistogramRoad\testingHistogramRoad.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\testingHistogramRoad.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
@@ -14,8 +14,8 @@
        FinalizeBuildStatus:
          Deleting file "Debug\testingHistogramRoad.unsuccessfulbuild".
          Touching "Debug\testingHistogramRoad.lastbuildstate".
-     1>Done Building Project "C:\Users\PCBLAB_01\Desktop\Road-Detection github\Road-Detection\testingHistogramRoad\testingHistogramRoad.vcxproj" (build target(s)).
+     1>Done Building Project "\\Mac\Home\Desktop\Road-Detection\testingHistogramRoad\testingHistogramRoad.vcxproj" (build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:00.33
+Time Elapsed 00:00:02.69
